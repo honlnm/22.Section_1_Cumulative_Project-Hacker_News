@@ -7,8 +7,7 @@ let checkedLIs = [];
  * User login/signup/login
  */
 
-async function login(evt) {
-  console.debug("login", evt);
+async function handleLogin(evt) {
   evt.preventDefault();
   const username = $("#login-username").val();
   const password = $("#login-password").val();
@@ -19,10 +18,9 @@ async function login(evt) {
   updateUIOnUserLogin();
 }
 
-$loginForm.on("submit", login);
+$loginForm.on("submit", handleLogin);
 
-async function signup(evt) {
-  console.debug("signup", evt);
+async function handleSignup(evt) {
   evt.preventDefault();
   const name = $("#signup-name").val();
   const username = $("#signup-username").val();
@@ -34,21 +32,19 @@ async function signup(evt) {
   $signupForm.trigger("reset");
 }
 
-$signupForm.on("submit", signup);
+$signupForm.on("submit", handleSignup);
 
-function logout(evt) {
-  console.debug("logout", evt);
+function handleLogout(evt) {
   localStorage.clear();
   location.reload();
 }
 
-$navLogOut.on("click", logout);
+$navLogOut.on("click", handleLogout);
 
 /******************************************************************************
  * Storing/recalling previously-logged-in-user with localStorage
  */
 async function checkForRememberedUser() {
-  console.debug("checkForRememberedUser");
   const token = localStorage.getItem("token");
   const username = localStorage.getItem("username");
   if (!token || !username) return false;
@@ -56,7 +52,6 @@ async function checkForRememberedUser() {
 }
 
 function saveUserCredentialsInLocalStorage() {
-  console.debug("saveUserCredentialsInLocalStorage");
   if (currentUser) {
     localStorage.setItem("token", currentUser.loginToken);
     localStorage.setItem("username", currentUser.username);
@@ -68,7 +63,6 @@ function saveUserCredentialsInLocalStorage() {
  */
 
 async function updateUIOnUserLogin() {
-  console.debug("updateUIOnUserLogin");
   $allStoriesList.show();
   updateNavOnLogin();
   User.enableFavoriteTracking();

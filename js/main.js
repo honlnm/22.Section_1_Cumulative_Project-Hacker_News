@@ -24,7 +24,6 @@ function hidePageComponents() {
 }
 
 async function start() {
-  console.debug("start");
   await checkForRememberedUser();
   await getAndShowStoriesOnStart();
   if (currentUser) updateUIOnUserLogin();

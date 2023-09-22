@@ -60,7 +60,6 @@ async function putFavStoriesOnPage() {
     $allStoriesList.append($story);
   }
   $allStoriesList.show();
-  checkOffFavs();
   User.enableFavoriteTracking();
 }
 
@@ -73,14 +72,12 @@ async function putMyStoriesOnPage() {
   }
   $('<button>').appendTo('li').text('Delete Story').attr('class', 'delete-Own-Story-Button');
   $allStoriesList.show();
-  checkOffFavs();
   User.deleteOwnStory();
   User.enableFavoriteTracking();
 }
 
 $('.delete-Own-Story-Button').on('click', function () {
   const id = $(this).parent().attr(id);
-
 });
 
 function checkOffFavs() {
@@ -96,7 +93,7 @@ function checkOffFavs() {
   };
 };
 
-async function putGeneratedStoryOnPage() {
+async function handlePutGeneratedStoryOnPage() {
   const storyTitle = $('#title-input').val();
   const storyAuthor = $('#author-input').val();
   const storyURL = $('#url-input').val();
@@ -108,6 +105,6 @@ async function putGeneratedStoryOnPage() {
   getAndShowStoriesOnStart();
 };
 
-$('.story-submit-button').on('click', putGeneratedStoryOnPage);
+$('.story-submit-button').on('click', handlePutGeneratedStoryOnPage);
 
 

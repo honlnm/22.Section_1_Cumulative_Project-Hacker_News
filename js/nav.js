@@ -4,52 +4,46 @@
  * Handling navbar clicks and updating navbar
  */
 
-function navAllStories(evt) {
-  console.debug("navAllStories", evt);
+function handleNavAllStories(evt) {
   hidePageComponents();
   putStoriesOnPage();
   User.enableFavoriteTracking();
   checkOffFavs()
 }
 
-$body.on("click", "#nav-all", navAllStories);
+$body.on("click", "#nav-all", handleNavAllStories);
 
-function navLoginClick(evt) {
-  console.debug("navLoginClick", evt);
+function handleNavLoginClick(evt) {
   hidePageComponents();
   $loginForm.show();
   $signupForm.show();
 }
 
-$navLogin.on("click", navLoginClick);
+$navLogin.on("click", handleNavLoginClick);
 
-function navSubmitClick(evt) {
-  console.debug("navSubmitClick", evt);
+function handleNavSubmitClick(evt) {
   $newStoryForm.show();
 }
 
-$navNewStoryForm.on("click", navSubmitClick);
+$navNewStoryForm.on("click", handleNavSubmitClick);
 
-function navFavoritesClick(evt) {
-  console.debug("navFavoritesClick", evt);
+function handleNavFavoritesClick(evt) {
   putFavStoriesOnPage();
   User.enableFavoriteTracking();
   checkOffFavs();
 };
 
-$navFavorites.on("click", navFavoritesClick);
+$navFavorites.on("click", handleNavFavoritesClick);
 
-function navMyStories(evt) {
-  console.debug("navMyStories", evt);
+function handleNavMyStories(evt) {
   putMyStoriesOnPage();
   User.enableFavoriteTracking();
   checkOffFavs();
 }
 
-$navMyStories.on("click", navMyStories);
+$navMyStories.on("click", handleNavMyStories);
 
 function updateNavOnLogin() {
-  console.debug("updateNavOnLogin");
   $(".main-nav-links").show();
   $navLogin.hide();
   $navLogOut.show();

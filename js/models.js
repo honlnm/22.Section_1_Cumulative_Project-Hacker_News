@@ -34,12 +34,17 @@ class StoryList {
   }
 
   static async getStories() {
-    const response = await axios({
-      url: `${BASE_URL}/stories`,
-      method: "GET",
-    });
-    const stories = response.data.stories.map(story => new Story(story));
-    return new StoryList(stories);
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/stories`,
+        method: "GET",
+      });
+      const stories = response.data.stories.map(story => new Story(story));
+      return new StoryList(stories);
+    } catch (err) {
+      console.error("getStories failed", err);
+      return null;
+    }
   }
 
   static getFavStories() {
@@ -47,13 +52,18 @@ class StoryList {
   }
 
   async addStory(user, newStory) {
-    const storyPost = await axios({
-      url: `${BASE_URL}/stories`,
-      method: "POST",
-      data: { token: user.loginToken, story: newStory }
-    });
-    const storyData = storyPost.data.story;
-    return new Story(storyData.storyId, storyData.title, storyData.author, storyData.url, storyData.username, storyData.createdAt);
+    try {
+      const storyPost = await axios({
+        url: `${BASE_URL}/stories`,
+        method: "POST",
+        data: { token: user.loginToken, story: newStory }
+      });
+      const storyData = storyPost.data.story;
+      return new Story(storyData.storyId, storyData.title, storyData.author, storyData.url, storyData.username, storyData.createdAt);
+    } catch (err) {
+      console.error("addStory failed", err);
+      return null;
+    }
   }
 }
 
@@ -76,41 +86,51 @@ class User {
   }
 
   static async signup(username, password, name) {
-    const response = await axios({
-      url: `${BASE_URL}/signup`,
-      method: "POST",
-      data: { user: { username, password, name } },
-    });
-    let { user } = response.data
-    return new User(
-      {
-        username: user.username,
-        name: user.name,
-        createdAt: user.createdAt,
-        favorites: user.favorites,
-        ownStories: user.stories
-      },
-      response.data.token
-    );
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/signup`,
+        method: "POST",
+        data: { user: { username, password, name } },
+      });
+      let { user } = response.data
+      return new User(
+        {
+          username: user.username,
+          name: user.name,
+          createdAt: user.createdAt,
+          favorites: user.favorites,
+          ownStories: user.stories
+        },
+        response.data.token
+      );
+    } catch (err) {
+      console.error("signup failed", err);
+      return null;
+    }
   }
 
   static async login(username, password) {
-    const response = await axios({
-      url: `${BASE_URL}/login`,
-      method: "POST",
-      data: { user: { username, password } },
-    });
-    let { user } = response.data;
-    return new User(
-      {
-        username: user.username,
-        name: user.name,
-        createdAt: user.createdAt,
-        favorites: user.favorites,
-        ownStories: user.stories
-      },
-      response.data.token
-    );
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/login`,
+        method: "POST",
+        data: { user: { username, password } },
+      });
+      let { user } = response.data;
+      return new User(
+        {
+          username: user.username,
+          name: user.name,
+          createdAt: user.createdAt,
+          favorites: user.favorites,
+          ownStories: user.stories
+        },
+        response.data.token
+      );
+    } catch (err) {
+      console.error("login failed", err);
+      return null;
+    }
   }
 
   static async loginViaStoredCredentials(token, username) {
@@ -190,24 +210,35 @@ class User {
         const storyId = ($(this).parent().parent().attr('id'));
         const parentLi = ($(this).parent().parent());
         if (checkbox.checked) {
-          const response = await axios({
-            url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
-            method: "POST",
-            data: { token: currentUser.loginToken }
-          });
-          localStorage.setItem("favorites", JSON.stringify(response.data.user.favorites, ['author', 'createdAt', 'storyId', 'title', 'updatedAt', 'url', 'username']));
+          try {
+            const response = await axios({
+              url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
+              method: "POST",
+              data: { token: currentUser.loginToken }
+            });
+            localStorage.setItem("favorites", JSON.stringify(response.data.user.favorites, ['author', 'createdAt', 'storyId', 'title', 'updatedAt', 'url', 'username']));
+          } catch (err) {
+            console.error("enableFavoriteTracking failed", err);
+            return null;
+          }
         } else {
-          const response = await axios({
-            url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
-            method: "DELETE",
-            data: { token: currentUser.loginToken }
-          });
-          localStorage.setItem("favorites", JSON.stringify(response.data.user.favorites, ['author', 'createdAt', 'storyId', 'title', 'updatedAt', 'url', 'username']));
-          parentLi.remove();
+          try {
+            const response = await axios({
+              url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
+              method: "DELETE",
+              data: { token: currentUser.loginToken }
+            });
+            localStorage.setItem("favorites", JSON.stringify(response.data.user.favorites, ['author', 'createdAt', 'storyId', 'title', 'updatedAt', 'url', 'username']));
+            parentLi.remove();
+          } catch (err) {
+            console.error("enableFavoriteTracking failed", err);
+            return null;
+          }
         };
       });
       checkOffFavs()
     });
+    checkOffFavs()
   }
 }
 
