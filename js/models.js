@@ -47,10 +47,6 @@ class StoryList {
     }
   }
 
-  static getFavStories() {
-    return JSON.parse(localStorage.getItem("favorites") || []);
-  }
-
   async addStory(user, newStory) {
     try {
       const storyPost = await axios({
@@ -183,62 +179,6 @@ class User {
       console.error("getUserOwnStories failed", err);
       return null;
     }
-  }
-
-  static deleteOwnStory() {
-    try {
-      $('.delete-Own-Story-Button').on('click', async function () {
-        const storyId = $(this).parent().attr('id');
-        await axios({
-          url: `${BASE_URL}/stories/${storyId}`,
-          method: "DELETE",
-          params: { token: currentUser.loginToken }
-        })
-        $(this).parent().remove();
-        return alert("Story Deleted");
-      });
-    } catch (err) {
-      console.error("deleteOwnStory failed", err);
-      return null;
-    }
-  }
-
-  static enableFavoriteTracking() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(function (checkbox) {
-      checkbox.addEventListener('change', async function () {
-        const storyId = ($(this).parent().parent().attr('id'));
-        const parentLi = ($(this).parent().parent());
-        if (checkbox.checked) {
-          try {
-            const response = await axios({
-              url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
-              method: "POST",
-              data: { token: currentUser.loginToken }
-            });
-            localStorage.setItem("favorites", JSON.stringify(response.data.user.favorites, ['author', 'createdAt', 'storyId', 'title', 'updatedAt', 'url', 'username']));
-          } catch (err) {
-            console.error("enableFavoriteTracking failed", err);
-            return null;
-          }
-        } else {
-          try {
-            const response = await axios({
-              url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
-              method: "DELETE",
-              data: { token: currentUser.loginToken }
-            });
-            localStorage.setItem("favorites", JSON.stringify(response.data.user.favorites, ['author', 'createdAt', 'storyId', 'title', 'updatedAt', 'url', 'username']));
-            parentLi.remove();
-          } catch (err) {
-            console.error("enableFavoriteTracking failed", err);
-            return null;
-          }
-        };
-      });
-      checkOffFavs()
-    });
-    checkOffFavs()
   }
 }
 

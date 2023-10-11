@@ -65,7 +65,7 @@ function saveUserCredentialsInLocalStorage() {
 async function updateUIOnUserLogin() {
   $allStoriesList.show();
   updateNavOnLogin();
-  User.enableFavoriteTracking();
+  enableFavoriteTracking();
   $loginForm.hide();
   $signupForm.hide();
 }

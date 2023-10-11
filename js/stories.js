@@ -52,6 +52,42 @@ function putStoriesOnPage() {
   checkOffFavs();
 }
 
+function enableFavoriteTracking() {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(function (checkbox) {
+    checkbox.addEventListener('change', async function () {
+      const storyId = ($(this).parent().parent().attr('id'));
+      const parentLi = ($(this).parent().parent());
+      if (checkbox.checked) {
+        try {
+          const response = await axios({
+            url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
+            method: "POST",
+            data: { token: currentUser.loginToken }
+          });
+        } catch (err) {
+          console.error("enableFavoriteTracking failed", err);
+          return null;
+        }
+      } else {
+        try {
+          const response = await axios({
+            url: `${BASE_URL}/users/${currentUser.username}/favorites/${storyId}`,
+            method: "DELETE",
+            data: { token: currentUser.loginToken }
+          });
+          parentLi.remove();
+        } catch (err) {
+          console.error("enableFavoriteTracking failed", err);
+          return null;
+        }
+      };
+    });
+    checkOffFavs()
+  });
+  checkOffFavs()
+}
+
 async function putFavStoriesOnPage() {
   $allStoriesList.empty();
   const favoriteStories = await User.getUserFavorites();
@@ -60,7 +96,25 @@ async function putFavStoriesOnPage() {
     $allStoriesList.append($story);
   }
   $allStoriesList.show();
-  User.enableFavoriteTracking();
+  enableFavoriteTracking();
+}
+
+function deleteOwnStory() {
+  try {
+    $('.delete-Own-Story-Button').on('click', async function () {
+      const storyId = $(this).parent().attr('id');
+      await axios({
+        url: `${BASE_URL}/stories/${storyId}`,
+        method: "DELETE",
+        params: { token: currentUser.loginToken }
+      })
+      $(this).parent().remove();
+      return alert("Story Deleted");
+    });
+  } catch (err) {
+    console.error("deleteOwnStory failed", err);
+    return null;
+  }
 }
 
 async function putMyStoriesOnPage() {
@@ -72,13 +126,9 @@ async function putMyStoriesOnPage() {
   }
   $('<button>').appendTo('li').text('Delete Story').attr('class', 'delete-Own-Story-Button');
   $allStoriesList.show();
-  User.deleteOwnStory();
-  User.enableFavoriteTracking();
+  deleteOwnStory();
+  enableFavoriteTracking();
 }
-
-$('.delete-Own-Story-Button').on('click', function () {
-  const id = $(this).parent().attr(id);
-});
 
 function checkOffFavs() {
   const favorites = currentUser.favorites;
@@ -86,7 +136,7 @@ function checkOffFavs() {
     const storyId = `${favorites[i].storyId}`;
     if ($('ol').find('li#' + storyId)) {
       try {
-        const checkbox = document.getElementById(storyId).children[0].children[0];
+        const checkbox = document.getElementById(storyId).querySelector('input');
         checkbox.setAttribute('checked', true);
       } catch (err) { console.error("checkOffFavs failed", err) }
     }

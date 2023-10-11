@@ -7,7 +7,7 @@
 function handleNavAllStories(evt) {
   hidePageComponents();
   putStoriesOnPage();
-  User.enableFavoriteTracking();
+  enableFavoriteTracking();
   checkOffFavs()
 }
 
@@ -29,7 +29,7 @@ $navNewStoryForm.on("click", handleNavSubmitClick);
 
 function handleNavFavoritesClick(evt) {
   putFavStoriesOnPage();
-  User.enableFavoriteTracking();
+  enableFavoriteTracking();
   checkOffFavs();
 };
 
@@ -37,7 +37,7 @@ $navFavorites.on("click", handleNavFavoritesClick);
 
 function handleNavMyStories(evt) {
   putMyStoriesOnPage();
-  User.enableFavoriteTracking();
+  enableFavoriteTracking();
   checkOffFavs();
 }
 
